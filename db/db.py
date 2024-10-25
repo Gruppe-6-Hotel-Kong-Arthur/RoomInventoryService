@@ -2,10 +2,10 @@ import sqlite3
 import pandas as pd
 import os
 
-# Base prices for each room type
+# Base room prices (in DKK) for each room type
 BASE_PRICES = {
     'Standard Single': 900,
-    'Grand Lit': 1100,
+    'Grand Lit': 1100, 
     'Standard Double': 1200,
     'Superior Double': 1400,
     'Junior Suite': 1800,
@@ -14,38 +14,21 @@ BASE_PRICES = {
     'LOFT Suite': 3000,
 }
 
-# Seasonal multipliers
-SEASONAL_MULTIPLIERS = {
+# Season multipliers (LOW= 20% off, MID= normal season, HIGH= 20% more expensive)
+SEASONS = {
     'LOW': 0.8,
     'MID': 1.0,
-    'HIGH': 1.2,
+    'HIGH': 1.2
 }
 
-# ===================================================================================
-
-# Create or connect to SQLite database
+# Creates database connection with row factory
 def create_connection():
     connection = sqlite3.connect('db/room_inventory.db')
-    connection.row_factory = sqlite3.Row  # Rows as dictionaries
+    connection.row_factory = sqlite3.Row
     return connection
 
-# Initialize database and create necessary tables
-def init_db():
-    create_tables()
-
-    if not insert_base_room_types():
-        print("Failed to insert base room types.")
-
-    if not insert_seasonal_multipliers():
-        print("Failed to insert seasonal multipliers.")
-
-    if not read_data_from_csv():
-        print("Failed to read data from CSV and populate Rooms table.")
-
-    print("Database initialized successfully.")
-
-# Create necessary tables for room inventory
-def create_tables():
+# Creates initial database tables
+def _create_tables():
     connection = create_connection()
     cursor = connection.cursor()
 
@@ -53,8 +36,8 @@ def create_tables():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS RoomTypes (
             id INTEGER PRIMARY KEY,
-            type_name VARCHAR(100) UNIQUE NOT NULL,
-            base_price REAL NOT NULL CHECK(base_price > 0)
+            type_name TEXT NOT NULL UNIQUE,
+            base_price REAL NOT NULL
         )
     """)
 
@@ -63,211 +46,175 @@ def create_tables():
         CREATE TABLE IF NOT EXISTS Rooms (
             id INTEGER PRIMARY KEY,
             room_type_id INTEGER NOT NULL,
-            available INTEGER CHECK(available IN (0, 1)) NOT NULL,
+            availability INTEGER NOT NULL DEFAULT 1,
             FOREIGN KEY (room_type_id) REFERENCES RoomTypes(id)
         )
     """)
 
-    # Create SeasonalMultiplier table
+    # Create Seasons table 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS SeasonalMultiplier (
+        CREATE TABLE IF NOT EXISTS Seasons (
             id INTEGER PRIMARY KEY,
-            season VARCHAR(10) NOT NULL UNIQUE,
-            multiplier REAL NOT NULL CHECK(multiplier > 0)
+            season_type TEXT NOT NULL,
+            multiplier REAL NOT NULL
         )
     """)
 
     connection.commit()
     connection.close()
 
-# Populate RoomTypes table with base prices
-def insert_base_room_types():
+# Checks if initial data exists in database
+def _check_data_exists():
     connection = create_connection()
     cursor = connection.cursor()
-
-    cursor.execute("SELECT COUNT(*) AS count FROM RoomTypes")
-    if cursor.fetchone()['count'] == 0:
-        for type_name, base_price in BASE_PRICES.items():
-            try:
-                cursor.execute("INSERT INTO RoomTypes (type_name, base_price) VALUES (?, ?)", (type_name, base_price))
-            except Exception as e:
-                print(f"Error adding base room type '{type_name}': {e}")
-                return False
-
-    connection.commit()
+    cursor.execute("SELECT COUNT(*) count FROM RoomTypes")
+    result = cursor.fetchone()['count'] > 0
     connection.close()
-    return True  # Return True after successful execution
+    return result
 
-# Insert seasonal multipliers into the database
-def insert_seasonal_multipliers():
+# Iterate over the BASE_PRICES dictionary and insert each room type and its corresponding base price into the RoomTypes table.
+def _insert_base_data():
     connection = create_connection()
     cursor = connection.cursor()
-
-    cursor.execute("SELECT COUNT(*) AS count FROM SeasonalMultiplier")
-    if cursor.fetchone()['count'] == 0:
-        for season, multiplier in SEASONAL_MULTIPLIERS.items():
-            try:
-                cursor.execute("INSERT INTO SeasonalMultiplier (season, multiplier) VALUES (?, ?)", (season, multiplier))
-            except Exception as e:
-                print(f"Error adding seasonal multiplier for '{season}': {e}")
-                return False
-
+    
+    for type_name, base_price in BASE_PRICES.items():
+        cursor.execute("""
+            INSERT INTO RoomTypes (type_name, base_price) 
+            VALUES (?, ?)
+        """, (type_name, base_price))
+            
     connection.commit()
     connection.close()
-    return True  # Return True after successful execution
 
-# Read data from CSV and populate the Rooms table
-def read_data_from_csv():
-    csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'csv/international_names_with_rooms_1000.csv')
+# Iterate over the SEASONS dictionary and insert each season type and its corresponding multiplier into the Seasons table.
+def _insert_season_multiplier_data():
+    connection = create_connection()
+    cursor = connection.cursor()
+    
+    for season_type, multiplier in SEASONS.items():
+        cursor.execute("""
+            INSERT INTO Seasons (season_type, multiplier) 
+            VALUES (?, ?)
+        """, (season_type, multiplier))
+            
+    connection.commit()
+    connection.close()
+
+# Reads and inserts room data from CSV
+def _read_csv_data():
+    # Read CSV file by specifying the CSV file path
+    csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                           'csv/international_names_with_rooms_1000.csv')
     data = pd.read_csv(csv_path)
-
+    
     connection = create_connection()
     cursor = connection.cursor()
 
-    for _, row in data.iterrows():
+    # Iterate over each row in the CSV file and insert the room type into the RoomTypes table
+    for index, row in data.iterrows():
         room_type_name = row['Room Type']
-
-        cursor.execute("SELECT id FROM RoomTypes WHERE type_name = ?", (room_type_name,))
+        
+        # Check if room type already exists in the RoomTypes table
+        cursor.execute("SELECT id FROM RoomTypes WHERE type_name = ?", 
+                      (room_type_name,))
         room_type = cursor.fetchone()
-
+        
+        # If room type does not exist, insert it into the RoomTypes table
         if room_type:
-            room_type_id = room_type['id']
-            try:
-                cursor.execute("INSERT INTO Rooms (room_type_id, available) VALUES (?, 1)", (room_type_id,))
-            except Exception as e:
-                print(f"Error adding room for room type ID {room_type_id}: {e}")
-                return False
-        else:
-            print(f"Room type '{room_type_name}' not found.")
-            return False
+            cursor.execute("""
+                INSERT INTO Rooms (room_type_id, availability) 
+                VALUES (?, 1)
+            """, (room_type['id'],))
 
     connection.commit()
     connection.close()
-    return True  # Return True after successful execution
 
-# ===================================================================================
-
-# Retrieve all room types
+# Gets all room types 
 def db_get_room_types():
     connection = create_connection()
     cursor = connection.cursor()
 
-    cursor.execute('SELECT * FROM RoomTypes')
-
-    guests = cursor.fetchall()
+    # Retrieve all room types from the RoomTypes table and order them by base price
+    cursor.execute('SELECT * FROM RoomTypes ORDER BY base_price')
+    result = [dict(row) for row in cursor.fetchall()]
     connection.close()
-    
-    if guests:
-        return [dict(guest) for guest in guests]
-    else:
-        return None
+    return result
 
-# Retrieve a specific room type by ID
-def db_get_room_type_by_id(id):
+# Gets specific room type by id
+def db_get_room_type(id):
     connection = create_connection()
     cursor = connection.cursor()
-
-    cursor.execute("SELECT * FROM RoomTypes WHERE id = ?", (id,))
-
-    room_type = cursor.fetchone()
+    cursor.execute('SELECT * FROM RoomTypes WHERE id = ?', (id,))
+    result = cursor.fetchone()
     connection.close()
+    return dict(result) if result else None
 
-    if room_type:
-        return dict(room_type)
-    else:
-        return None
-    
-# Add a new room type to the database
+# Adds new room type
 def db_add_room_type(type_name, base_price):
     connection = create_connection()
     cursor = connection.cursor()
-
-    try:
-        cursor.execute("INSERT INTO RoomTypes (type_name, base_price) VALUES (?, ?)", (type_name, base_price))
-        connection.commit()
-        return True
-    except Exception as e:
-        print(f"Failed to add room type: {e}")
-        return False
-    finally:
-        connection.close()
-
-# Retrieve all available rooms TODO:ONLY SEND BASE PRICE
-def db_get_available_rooms():
-    connection = create_connection()
-    cursor = connection.cursor()
-
     cursor.execute("""
-        SELECT Rooms.id, RoomTypes.type_name, RoomTypes.base_price, 
-               CASE WHEN Rooms.available = 1 THEN 'True' ELSE 'False' END as available
-        FROM Rooms
-        INNER JOIN RoomTypes ON Rooms.room_type_id = RoomTypes.id
-        WHERE Rooms.available = 1
-    """)
-
-    rooms = cursor.fetchall()
+        INSERT INTO RoomTypes (type_name, base_price) 
+        VALUES (?, ?)
+    """, (type_name, base_price))
+    connection.commit()
     connection.close()
+    return True
 
-    if rooms:
-        return [dict(room) for room in rooms]
-    else:
-        return None
-
-# Add a new room to the database
-def db_add_room(room_type_id):
+# Updates room type price
+def db_update_room_type_price(id, base_price):
     connection = create_connection()
     cursor = connection.cursor()
+    cursor.execute("""UPDATE RoomTypes SET base_price = ? WHERE id = ?""", (base_price, id))
+    connection.commit()
+    connection.close()
+    return True
 
-    try:
-        cursor.execute("INSERT INTO Rooms (room_type_id, available) VALUES (?, 1)", (room_type_id,))
-        connection.commit()
-        return True
-    except Exception as e:
-        print(f"Failed to add room: {e}")
-        return False
-    finally:
-        connection.close()
-
-# Retrieve all rooms
-def db_get_all_rooms():
+# Retrieves all rooms along with their type information
+def db_get_rooms():
     connection = create_connection()
     cursor = connection.cursor()
-
     cursor.execute("""
-        SELECT Rooms.id, RoomTypes.type_name, RoomTypes.base_price, 
-               CASE WHEN Rooms.available = 1 THEN 'True' ELSE 'False' END as available
-        FROM Rooms
+        SELECT * FROM Rooms
         INNER JOIN RoomTypes ON Rooms.room_type_id = RoomTypes.id
     """)
-
-    rooms = cursor.fetchall()
+    result = [dict(row) for row in cursor.fetchall()]
     connection.close()
+    return result
 
-    if rooms:
-        return [dict(room) for room in rooms]
-    else:
-        return
-
-# Get a room by ID
-def db_get_room_by_id(id):
+# Gets specific room with type info
+def db_get_room(id):
     connection = create_connection()
     cursor = connection.cursor()
-
     cursor.execute("""
-        SELECT Rooms.id, RoomTypes.type_name, RoomTypes.base_price, 
-               CASE WHEN Rooms.available = 1 THEN 'True' ELSE 'False' END as available
-        FROM Rooms
+        SELECT * FROM Rooms
         INNER JOIN RoomTypes ON Rooms.room_type_id = RoomTypes.id
         WHERE Rooms.id = ?
     """, (id,))
-
-    room = cursor.fetchone()
+    result = cursor.fetchone()
     connection.close()
+    return dict(result) if result else None
 
-    if room:
-        return dict(room)
-    else:
-        return None
+# Updates room availability
+def db_update_room_availability(id, availability):
+    connection = create_connection()
+    cursor = connection.cursor()
+    cursor.execute("""
+        UPDATE Rooms 
+        SET availability = ?
+        WHERE id = ?
+    """, (availability, id))
+    connection.commit()
+    connection.close()
+    return True
 
-# Execute the database initialization
-init_db()
+# Initializes database with tables and data
+def init_db():
+    _create_tables()
+
+    # If data does not exist in database, insert base data and read CSV data
+    if not _check_data_exists():
+        _insert_season_multiplier_data()
+        _insert_base_data()
+        _read_csv_data()
+    print("Database initialized successfully.")

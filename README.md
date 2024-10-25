@@ -6,6 +6,18 @@
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
 
+(Calculated from data set)
+Room Type Counts:
+Grand Lit: 118
+Junior Suite: 136
+LOFT Suite: 103
+Spa Executive: 138
+Standard Double: 117
+Standard Single: 117
+Suite: 137
+Superior Double: 134
+Total Rooms: 1000
+
 ## Overview
 
 The Room Inventory Microservice is a vital component of the Hotel Kong Arthur management system, designed to handle all room-related operations efficiently. It provides comprehensive APIs for room management, including room types, availability tracking, and pricing management. The service implements a seasonal pricing strategy and maintains a relational database structure for optimal data organization.
