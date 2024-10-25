@@ -145,5 +145,129 @@ def read_data_from_csv():
     connection.close()
     return True  # Return True after successful execution
 
+# ===================================================================================
+
+# Retrieve all room types
+def db_get_room_types():
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('SELECT * FROM RoomTypes')
+
+    guests = cursor.fetchall()
+    connection.close()
+    
+    if guests:
+        return [dict(guest) for guest in guests]
+    else:
+        return None
+
+# Retrieve a specific room type by ID
+def db_get_room_type_by_id(id):
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM RoomTypes WHERE id = ?", (id,))
+
+    room_type = cursor.fetchone()
+    connection.close()
+
+    if room_type:
+        return dict(room_type)
+    else:
+        return None
+    
+# Add a new room type to the database
+def db_add_room_type(type_name, base_price):
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("INSERT INTO RoomTypes (type_name, base_price) VALUES (?, ?)", (type_name, base_price))
+        connection.commit()
+        return True
+    except Exception as e:
+        print(f"Failed to add room type: {e}")
+        return False
+    finally:
+        connection.close()
+
+# Retrieve all available rooms TODO:ONLY SEND BASE PRICE
+def db_get_available_rooms():
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT Rooms.id, RoomTypes.type_name, RoomTypes.base_price, 
+               CASE WHEN Rooms.available = 1 THEN 'True' ELSE 'False' END as available
+        FROM Rooms
+        INNER JOIN RoomTypes ON Rooms.room_type_id = RoomTypes.id
+        WHERE Rooms.available = 1
+    """)
+
+    rooms = cursor.fetchall()
+    connection.close()
+
+    if rooms:
+        return [dict(room) for room in rooms]
+    else:
+        return None
+
+# Add a new room to the database
+def db_add_room(room_type_id):
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("INSERT INTO Rooms (room_type_id, available) VALUES (?, 1)", (room_type_id,))
+        connection.commit()
+        return True
+    except Exception as e:
+        print(f"Failed to add room: {e}")
+        return False
+    finally:
+        connection.close()
+
+# Retrieve all rooms
+def db_get_all_rooms():
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT Rooms.id, RoomTypes.type_name, RoomTypes.base_price, 
+               CASE WHEN Rooms.available = 1 THEN 'True' ELSE 'False' END as available
+        FROM Rooms
+        INNER JOIN RoomTypes ON Rooms.room_type_id = RoomTypes.id
+    """)
+
+    rooms = cursor.fetchall()
+    connection.close()
+
+    if rooms:
+        return [dict(room) for room in rooms]
+    else:
+        return
+
+# Get a room by ID
+def db_get_room_by_id(id):
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT Rooms.id, RoomTypes.type_name, RoomTypes.base_price, 
+               CASE WHEN Rooms.available = 1 THEN 'True' ELSE 'False' END as available
+        FROM Rooms
+        INNER JOIN RoomTypes ON Rooms.room_type_id = RoomTypes.id
+        WHERE Rooms.id = ?
+    """, (id,))
+
+    room = cursor.fetchone()
+    connection.close()
+
+    if room:
+        return dict(room)
+    else:
+        return None
+
 # Execute the database initialization
 init_db()
