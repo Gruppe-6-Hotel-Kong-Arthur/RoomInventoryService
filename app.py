@@ -1,14 +1,7 @@
 from flask import Flask, jsonify, request
-from db.db import (
-    db_get_room_types,
-    db_get_room_type,
-    db_add_room_type,
-    db_update_room_type_price,
-    db_get_rooms,
-    db_get_room,
-    db_update_room_availability,
-    init_db
-)
+from db.initialize import init_db
+from db.room_types import db_get_room_types, db_get_room_type, db_add_room_type, db_update_room_type_price
+from db.rooms import db_get_rooms, db_get_room, db_update_room_availability
 
 # Initializes Flask app
 app = Flask(__name__)
@@ -57,7 +50,7 @@ def get_rooms():
     return jsonify({"error": "No rooms found"}), 404
 
 # Retrieves specific room by id
-@app.route('/api/v1/room/<int:id>', methods=['GET'])
+@app.route('/api/v1/rooms/<int:id>', methods=['GET'])
 def get_room(id):
     room = db_get_room(id)
     if room:
@@ -65,7 +58,7 @@ def get_room(id):
     return jsonify({"error": "Room not found"}), 404
 
 # Updates/Patches room availability by id
-@app.route('/api/v1/room/<int:id>/availability', methods=['PATCH'])
+@app.route('/api/v1/rooms/<int:id>/availability', methods=['PATCH'])
 def update_room_availability(id):
     data = request.get_json()
     db_update_room_availability(id, int(data['availability']))

@@ -1,31 +1,8 @@
 import sqlite3
 import pandas as pd
 import os
-
-# Base room prices (in DKK) for each room type
-BASE_PRICES = {
-    'Standard Single': 900,
-    'Grand Lit': 1100, 
-    'Standard Double': 1200,
-    'Superior Double': 1400,
-    'Junior Suite': 1800,
-    'Spa Executive': 2000,
-    'Suite': 2500,
-    'LOFT Suite': 3000,
-}
-
-# Season multipliers (LOW= 20% off, MID= normal season, HIGH= 20% more expensive)
-SEASONS = {
-    'LOW': 0.8,
-    'MID': 1.0,
-    'HIGH': 1.2
-}
-
-# Creates database connection with row factory
-def create_connection():
-    connection = sqlite3.connect('db/room_inventory.db')
-    connection.row_factory = sqlite3.Row
-    return connection
+from .connection import create_connection
+from .config import BASE_PRICES, SEASONS
 
 # Creates initial database tables
 def _create_tables():
@@ -128,85 +105,6 @@ def _read_csv_data():
 
     connection.commit()
     connection.close()
-
-# Gets all room types 
-def db_get_room_types():
-    connection = create_connection()
-    cursor = connection.cursor()
-
-    # Retrieve all room types from the RoomTypes table and order them by base price
-    cursor.execute('SELECT * FROM RoomTypes ORDER BY base_price')
-    result = [dict(row) for row in cursor.fetchall()]
-    connection.close()
-    return result
-
-# Gets specific room type by id
-def db_get_room_type(id):
-    connection = create_connection()
-    cursor = connection.cursor()
-    cursor.execute('SELECT * FROM RoomTypes WHERE id = ?', (id,))
-    result = cursor.fetchone()
-    connection.close()
-    return dict(result) if result else None
-
-# Adds new room type
-def db_add_room_type(type_name, base_price):
-    connection = create_connection()
-    cursor = connection.cursor()
-    cursor.execute("""
-        INSERT INTO RoomTypes (type_name, base_price) 
-        VALUES (?, ?)
-    """, (type_name, base_price))
-    connection.commit()
-    connection.close()
-    return True
-
-# Updates room type price
-def db_update_room_type_price(id, base_price):
-    connection = create_connection()
-    cursor = connection.cursor()
-    cursor.execute("""UPDATE RoomTypes SET base_price = ? WHERE id = ?""", (base_price, id))
-    connection.commit()
-    connection.close()
-    return True
-
-# Retrieves all rooms along with their type information
-def db_get_rooms():
-    connection = create_connection()
-    cursor = connection.cursor()
-    cursor.execute("""
-        SELECT * FROM Rooms
-        INNER JOIN RoomTypes ON Rooms.room_type_id = RoomTypes.id
-    """)
-    result = [dict(row) for row in cursor.fetchall()]
-    connection.close()
-    return result
-
-# Gets specific room with type info
-def db_get_room(id):
-    connection = create_connection()
-    cursor = connection.cursor()
-    cursor.execute("""
-        SELECT * FROM Rooms
-        INNER JOIN RoomTypes ON Rooms.room_type_id = RoomTypes.id
-        WHERE Rooms.id = ?
-    """, (id,))
-    result = cursor.fetchone()
-    connection.close()
-    return dict(result) if result else None
-
-# Updates room availability
-def db_update_room_availability(id, availability):
-    connection = create_connection()
-    cursor = connection.cursor()
-    cursor.execute("""
-        UPDATE Rooms 
-        SET availability = ?
-        WHERE id = ?
-    """, (availability, id))
-    connection.commit()
-    connection.close()
-    return True
 
 # Initializes database with tables and data
 def init_db():
