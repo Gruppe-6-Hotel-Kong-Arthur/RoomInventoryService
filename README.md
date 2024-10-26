@@ -6,52 +6,39 @@
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
 
-(Calculated from data set)
-Room Type Counts:
-Grand Lit: 118
-Junior Suite: 136
-LOFT Suite: 103
-Spa Executive: 138
-Standard Double: 117
-Standard Single: 117
-Suite: 137
-Superior Double: 134
-Total Rooms: 1000
-
 ## Overview
 
 The Room Inventory Microservice is a vital component of the Hotel Kong Arthur management system, designed to handle all room-related operations efficiently. It provides comprehensive APIs for room management, including room types, availability tracking, and pricing management. The service implements a seasonal pricing strategy and maintains a relational database structure for optimal data organization.
 
-Key functionalities:
+**Key Features:**
 - Room type management with base pricing
 - Room availability tracking
 - Seasonal price adjustment system
-- RESTful API endpoints for seamless integration
-- Docker containerization for consistent deployment
+- RESTful API endpoints
+- Docker containerization
 
 ## Project Structure
 
+```bash
+RoomInventoryService/  
+│  
+├── csv/  
+│   └── international_names_with_rooms_1000.csv  # Initial room data  
+│  
+├── db/  
+│   ├── db.py                                    # Database operations  
+│   └── room_inventory.db                        # SQLite database  
+│  
+├── .dockerignore                                # Docker ignore rules  
+├── .gitignore                                   # Git ignore rules  
+├── app.py                                       # Main Flask application  
+├── Dockerfile                                   # Docker configuration  
+├── README.md                                    # Project documentation  
+└── requirements.txt                             # Python dependencies  
 ```
-RoomInventoryService/
-│
-├── csv/
-│   └── international_names_with_rooms_1000.csv  # Initial room data
-│
-├── db/
-│   ├── db.py                                    # Database operations
-│   └── room_inventory.db                        # SQLite database
-│
-├── .dockerignore                                # Docker ignore rules
-├── .gitignore                                   # Git ignore rules
-├── app.py                                       # Main Flask application
-├── Dockerfile                                   # Docker configuration
-├── README.md                                    # Project documentation
-└── requirements.txt                             # Python dependencies
-```
+
 
 ## Prerequisites
-
-Before running the service, ensure you have:
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [Python 3.x](https://www.python.org/downloads/) (for local development)
@@ -60,32 +47,16 @@ Before running the service, ensure you have:
 ## Installation
 
 ### Docker Setup (Recommended)
-
-1. Build the Docker image:
 ```bash
 docker build -t room-inventory-service .
-```
-
-2. Run the container:
-```bash
 docker run -d -p 5002:5002 --name room-inventory-service room-inventory-service
 ```
 
 ### Local Development Setup
-
-1. Create and activate virtual environment:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-2. Install dependencies:
-```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-```
-
-3. Run the application:
-```bash
 python app.py
 ```
 
@@ -93,113 +64,158 @@ python app.py
 
 ```mermaid
 erDiagram
-    RoomTypes ||--o{ Rooms : has
+    RoomTypes ||--o{ Rooms : contains
     RoomTypes {
         INTEGER id PK
-        VARCHAR type_name "UNIQUE"
+        VARCHAR type_name UK
         REAL base_price
     }
     Rooms {
         INTEGER id PK
         INTEGER room_type_id FK
-        INTEGER available
+        INTEGER availability
     }
-    SeasonalMultiplier {
+    Seasons {
         INTEGER id PK
-        VARCHAR season "UNIQUE"
+        VARCHAR season_type UK
         REAL multiplier
     }
 ```
 
+
 ## API Documentation
 
-| Method | Endpoint | Description | Request Body Example | Response Example |
-|--------|----------|-------------|---------------------|------------------|
-| GET | `/api/v1/room-types` | Get all room types | N/A | `[{"id": 1, "type_name": "Standard Single", "base_price": 900}]` |
-| GET | `/api/v1/room-types/<id>` | Get room type by ID | N/A | `{"id": 1, "type_name": "Standard Single", "base_price": 900}` |
-| POST | `/api/v1/room-types` | Add new room type | `{"type_name": "Deluxe", "base_price": 1500}` | `{"message": "Room type added successfully"}` |
-| GET | `/api/v1/rooms` | Get all rooms | N/A | `[{"id": 1, "type_name": "Standard Single", "base_price": 900, "available": "True"}]` |
-| GET | `/api/v1/rooms/<id>` | Get room by ID | N/A | `{"id": 1, "type_name": "Standard Single", "base_price": 900, "available": "True"}` |
-| POST | `/api/v1/rooms` | Add new room | `{"room_type_id": 1}` | `{"message": "Room added successfully"}` |
+| Method | Endpoint                   | Description             | Request Body                          | Response (200)                                                                                   | Error Responses                      |
+|--------|-----------------------------|-------------------------|---------------------------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
+| GET    | /api/v1/room_types          | Get all room types     | N/A                                   | `[{"id": 1, "type_name": "Standard Single", "base_price": 900}]`                                 | 404: `{"error": "No room types found"}` |
+| GET    | /api/v1/room_type/<id>      | Get room type by ID    | N/A                                   | `{"id": 1, "type_name": "Standard Single", "base_price": 900}`                                   | 404: `{"error": "Room type not found"}` |
+| POST   | /api/v1/room_type           | Add new room type      | `{"type_name": "Deluxe", "base_price": 1500}` | `{"message": "Room type added successfully"}`                                                 | 400: `{"error": "Missing required fields"}` |
+| PATCH  | /api/v1/room_type/<id>/price| Update room price      | `{"base_price": 1600}`                | `{"message": "Price updated successfully"}`                                                     | 404: `{"error": "Room type not found"}` |
+| GET    | /api/v1/rooms               | Get all rooms          | N/A                                   | `[{"id": 1, "room_type_id": 1, "availability": 1, "type_name": "Standard Single", "base_price": 900}]` | 404: `{"error": "No rooms found"}`       |
+| GET    | /api/v1/room/<id>           | Get room by ID         | N/A                                   | `{"id": 1, "room_type_id": 1, "availability": 1, "type_name": "Standard Single", "base_price": 900}` | 404: `{"error": "Room not found"}`       |
+| PATCH  | /api/v1/room/<id>/availability| Update room availability| `{"availability": 0}`              | `{"message": "Room availability updated successfully"}`                                          | 404: `{"error": "Room not found"}`       |
 
-## Testing with Postman
+## Room Types and Pricing System
 
-1. Open Postman and create a new collection named "Room Inventory Service"
+The hotel implements a dynamic pricing system based on room types and seasonal demand. Each room type has a base price, which is adjusted using seasonal multipliers to optimize revenue based on demand patterns.
 
-2. Add the following requests:
+### Room Distribution (calculated from CSV file)
 
-### Get All Room Types
-- Method: GET
-- URL: `http://localhost:5002/api/v1/room-types`
-- Expected Response: Array of room type objects
+- Standard Single: 117 rooms (900 DKK)
+- Grand Lit: 118 rooms (1100 DKK)
+- Standard Double: 117 rooms (1200 DKK)
+- Superior Double: 134 rooms (1400 DKK)
+- Junior Suite: 136 rooms (1800 DKK)
+- Spa Executive: 138 rooms (2000 DKK)
+- Suite: 137 rooms (2500 DKK)
+- LOFT Suite: 103 rooms (3000 DKK)
 
-### Get Room Type by ID
-- Method: GET
-- URL: `http://localhost:5002/api/v1/room-types/1`
-- Expected Response: Single room type object
-
-### Add New Room Type
-- Method: POST
-- URL: `http://localhost:5002/api/v1/room-types`
-- Headers: `Content-Type: application/json`
-- Body (raw JSON):
-```json
-{
-    "type_name": "Deluxe Suite",
-    "base_price": 1500
-}
-```
-- Expected Response: Success message
-
-### Get All Rooms
-- Method: GET
-- URL: `http://localhost:5002/api/v1/rooms`
-- Expected Response: Array of room objects
-
-### Get Room by ID
-- Method: GET
-- URL: `http://localhost:5002/api/v1/rooms/1`
-- Expected Response: Single room object
-
-### Add New Room
-- Method: POST
-- URL: `http://localhost:5002/api/v1/rooms`
-- Headers: `Content-Type: application/json`
-- Body (raw JSON):
-```json
-{
-    "room_type_id": 1
-}
-```
-- Expected Response: Success message
-
-## Base Prices and Seasonal Multipliers
-
-The service implements a flexible pricing system with base prices for different room types and seasonal multipliers:
-
-### Room Type Base Prices
-```python
-BASE_PRICES = {
-    'Standard Single': 900,
-    'Grand Lit': 1100,
-    'Standard Double': 1200,
-    'Superior Double': 1400,
-    'Junior Suite': 1800,
-    'Spa Executive': 2000,
-    'Suite': 2500,
-    'LOFT Suite': 3000,
-}
-```
+**Total Rooms: 1000**
 
 ### Seasonal Price Multipliers
+
 ```python
-SEASONAL_MULTIPLIERS = {
-    'LOW': 0.8,    # 20% discount
-    'MID': 1.0,    # Standard price
-    'HIGH': 1.2,   # 20% premium
+SEASONS = {
+    'LOW': 0.8,
+    'MID': 1.0,
+    'HIGH': 1.2
 }
 ```
+
+## Testing
+
+### Postman Collection
+
+You can use the following API endpoints in Postman or any HTTP client to test the application.
+
+#### 1. Get All Room Types
+- **Method:** `GET`
+- **Request:** `http://localhost:5002/api/v1/room_types`
+- **Response Example:**
+    ```json
+    [
+        {"id": 1, "type_name": "Standard Single", "base_price": 900},
+        {"id": 2, "type_name": "Deluxe Suite", "base_price": 1500}
+    ]
+    ```
+
+#### 2. Get Room Type by ID
+- **Method:** `GET`
+- **Request:** `http://localhost:5002/api/v1/room_type/1`
+- **Response Example:**
+    ```json
+    {"id": 1, "type_name": "Standard Single", "base_price": 900}
+    ```
+
+#### 3. Add Room Type
+- **Method:** `POST`
+- **Request:** `http://localhost:5002/api/v1/room_type`
+- **Request Body:**
+    ```json
+    {
+        "type_name": "Supreme Deluxe",
+        "base_price": 3000
+    }
+    ```
+- **Response Example:**
+    ```json
+    {"message": "Room type added successfully"}
+    ```
+
+#### 4. Update Room Price
+- **Method:** `PATCH`
+- **Request:** `http://localhost:5002/api/v1/room_type/3/price`
+- **Request Body:**
+    ```json
+    {
+        "base_price": 1600
+    }
+    ```
+- **Response Example:**
+    ```json
+    {"message": "Price updated successfully"}
+    ```
+
+#### 5. Get All Rooms
+- **Method:** `GET`
+- **Request:** `http://localhost:5002/api/v1/rooms`
+- **Response Example:**
+    ```json
+    [
+        {"id": 1, "room_type_id": 1, "availability": 1},
+        {"id": 2, "room_type_id": 2, "availability": 0},
+        {"id": 3, "room_type_id": 1, "availability": 0}
+    ]
+    ```
+
+#### 6. Get Room by ID
+- **Method:** `GET`
+- **Request:** `http://localhost:5002/api/v1/room/10`
+- **Response Example:**
+    ```json
+    {
+        "id": 1,
+        "room_type_id": 1,
+        "availability": 1,
+        "base_price": 900,
+        "type_name": "Standard Single"
+    }
+    ```
+
+#### 7. Update Room Availability
+- **Method:** `PATCH`
+- **Request:** `http://localhost:5002/api/v1/room/4/availability`
+- **Request Body:**
+    ```json
+    {
+        "availability": 0
+    }
+    ```
+- **Response Example:**
+    ```json
+    {"message": "Room availability updated successfully"}
+    ```
 
 ---
 
-Created by Hotel Kong Arthur Team
+#### Created by Hotel Kong Arthur Team
