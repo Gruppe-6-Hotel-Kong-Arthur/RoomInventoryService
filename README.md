@@ -111,18 +111,21 @@ erDiagram
 
 The hotel implements a dynamic pricing system based on room types and seasonal demand. Each room type has a base price, which is adjusted using seasonal multipliers to optimize revenue based on demand patterns.
 
-### Room Distribution (calculated from CSV file)
+### Room Distribution (based on bookings)
 
-- Standard Single: 117 rooms (900 DKK)
-- Grand Lit: 118 rooms (1100 DKK)
-- Standard Double: 117 rooms (1200 DKK)
-- Superior Double: 134 rooms (1400 DKK)
-- Junior Suite: 136 rooms (1800 DKK)
-- Spa Executive: 138 rooms (2000 DKK)
-- Suite: 137 rooms (2500 DKK)
-- LOFT Suite: 103 rooms (3000 DKK)
+The following table summarizes the distribution of room types based on the total bookings recorded. (There is 214 rooms in total)
 
-**Total Rooms: 1000**
+| Room Type           | Number of Bookings |
+|---------------------|---------------------|
+| Standard Single     | 117                 |
+| Grand Lit           | 118                 |
+| Standard Double     | 117                 |
+| Superior Double     | 134                 |
+| Junior Suite        | 136                 |
+| Spa Executive       | 138                 |
+| Suite               | 137                 |
+| LOFT Suite          | 103                 |
+| **Total Bookings**  | **1000**           |
 
 ### Seasonal Price Multipliers
 
