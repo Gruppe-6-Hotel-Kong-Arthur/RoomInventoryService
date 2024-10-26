@@ -15,7 +15,7 @@ def get_room_types():
     return jsonify({"error": "No room types found"}), 404
 
 # Retrieves specific room type by id
-@app.route('/api/v1/room_type/<int:id>', methods=['GET'])
+@app.route('/api/v1/room_types/<int:id>', methods=['GET'])
 def get_room_type(id):
     room_type = db_get_room_type(id)
     if room_type:
@@ -23,7 +23,7 @@ def get_room_type(id):
     return jsonify({"error": "Room type not found"}), 404
 
 # Add new room type by name and base price
-@app.route('/api/v1/room_type', methods=['POST'])
+@app.route('/api/v1/room_types', methods=['POST'])
 def add_room_type():
     data = request.get_json()
     required_fields = ['type_name', 'base_price']
@@ -35,7 +35,7 @@ def add_room_type():
     return jsonify({"message": "Room type added successfully"}), 201
 
 # Updates/Patches room type price by id
-@app.route('/api/v1/room_type/<int:id>/price', methods=['PATCH'])
+@app.route('/api/v1/room_types/<int:id>/price', methods=['PATCH'])
 def update_room_type_price(id):
     data = request.get_json()
     db_update_room_type_price(id, float(data['base_price']))
