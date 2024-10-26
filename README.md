@@ -111,30 +111,25 @@ erDiagram
 
 The hotel implements a dynamic pricing system based on room types and seasonal demand. Each room type has a base price, which is adjusted using seasonal multipliers to optimize revenue based on demand patterns.
 
-### Room Distribution (based on csv)
+### Room Distribution (based on CSV)
 
-The following table summarizes the distribution of room types based on the total bookings recorded. The hotel has a total of **214 rooms**, with varying amounts allocated to each type reflecting their luxury status.
+The following table summarizes the distribution of room types based on the total bookings recorded. The hotel has a total of **214 rooms**, with varying amounts allocated to each type reflecting their luxury status and corresponding pricing.
 
-| Room Type           | Number of Rooms | Number of Bookings |
-|---------------------|------------------|---------------------|
-| Standard Single     | 50               | 117                 |
-| Grand Lit           | 50               | 118                 |
-| Standard Double     | 40               | 117                 |
-| Superior Double     | 25               | 134                 |
-| Junior Suite        | 20               | 136                 |
-| Spa Executive       | 15               | 138                 |
-| Suite               | 10               | 137                 |
-| LOFT Suite          | 4                | 103                 |
-| **Total**           | **214**          | **1,000**           |
+| Room Type           | Number of Rooms | Number of Bookings | Base Price (DKK) |
+|---------------------|------------------|---------------------|-------------------|
+| Standard Single     | 50               | 117                 | 900               |
+| Grand Lit           | 50               | 118                 | 1100              |
+| Standard Double     | 40               | 117                 | 1200              |
+| Superior Double     | 25               | 134                 | 1400              |
+| Junior Suite        | 20               | 136                 | 1800              |
+| Spa Executive       | 15               | 138                 | 2000              |
+| Suite               | 10               | 137                 | 2500              |
+| LOFT Suite          | 4                | 103                 | 3000              |
+| **Total**           | **214**          | **1,000**           |                   |
 
-### Distribution Logic:
 - **Standard Single**, **Grand Lit**, and **Standard Double** are the most numerous, representing accessible luxury options.
 - **Superior Double** and **Junior Suite** have a moderate number of rooms.
 - **Spa Executive**, **Suite**, and **LOFT Suite** are the least available due to their higher luxury status.
-
-This distribution totals **214 rooms** while reflecting a realistic allocation based on the perceived luxury of each room type.
-
-
 
 ### Seasonal Price Multipliers
 
