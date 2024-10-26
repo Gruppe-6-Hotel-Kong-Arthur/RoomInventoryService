@@ -69,6 +69,16 @@ def update_room_availability(id):
     db_update_room_availability(id, int(data['availability']))
     return jsonify({"message": "Room availability updated successfully"}), 200
 
+# Error handler for 404 Not Found
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({"error": "Endpoint not found"}), 404
+
+# Error handler for 500 Internal Server Error
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({"error": "Internal server error"}), 500
+
 # Initializes database and runs app
 if __name__ == '__main__':
     init_db()
