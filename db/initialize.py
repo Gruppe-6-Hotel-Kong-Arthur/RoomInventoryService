@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pd
 import os
 from .connection import create_connection
-from .room_pricing import BASE_PRICES, SEASONS
+from .room_pricing_constants import BASE_PRICES, SEASONS
 
 # Creates initial database tables
 def _create_tables():
