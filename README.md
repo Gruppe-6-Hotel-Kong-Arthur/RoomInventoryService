@@ -26,16 +26,29 @@ RoomInventoryService/
 │   └── international_names_with_rooms_1000.csv  # Initial room data  
 │  
 ├── db/  
-│   ├── db.py                                    # Database operations  
-│   └── room_inventory.db                        # SQLite database  
+│   ├── __init__.py                             # Package interface
+│   ├── config.py                               # Constants and configuration
+│   ├── connection.py                           # Database connection management
+│   ├── initialize.py                           # Database initialization
+│   ├── room_types.py                           # Room type operations
+│   ├── rooms.py                                # Room operations
+│   └── room_inventory.db                       # SQLite database  
 │  
-├── .dockerignore                                # Docker ignore rules  
-├── .gitignore                                   # Git ignore rules  
-├── app.py                                       # Main Flask application  
-├── Dockerfile                                   # Docker configuration  
-├── README.md                                    # Project documentation  
-└── requirements.txt                             # Python dependencies  
+├── .dockerignore                               # Docker ignore rules  
+├── .gitignore                                  # Git ignore rules  
+├── app.py                                      # Main Flask application  
+├── Dockerfile                                  # Docker configuration  
+├── README.md                                   # Project documentation  
+└── requirements.txt                            # Python dependencies  
 ```
+
+The database module (`db/`) is organized into several Python modules for better separation of concerns:
+- `__init__.py`: Exports the public interface of the database package
+- `config.py`: Contains room prices and seasonal configurations
+- `connection.py`: Handles database connection management
+- `initialize.py`: Contains database initialization and setup functions
+- `room_types.py`: Handles all room type-related database operations
+- `rooms.py`: Handles all room-related database operations
 
 
 ## Prerequisites
