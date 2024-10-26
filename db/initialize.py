@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pd
 import os
 from .connection import create_connection
-from .config import BASE_PRICES, SEASONS
+from .room_pricing import BASE_PRICES, SEASONS
 
 # Creates initial database tables
 def _create_tables():
@@ -116,3 +116,4 @@ def init_db():
         _insert_base_data()
         _read_csv_data()
     print("Database initialized successfully.")
+    

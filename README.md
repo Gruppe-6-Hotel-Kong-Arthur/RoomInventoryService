@@ -28,8 +28,7 @@ RoomInventoryService/
 │   └── international_names_with_rooms_1000.csv  # Initial room data  
 │  
 ├── db/  
-│   ├── __init__.py                             # Package interface
-│   ├── config.py                               # Constants and configuration
+│   ├── room_pricing.py                         # Room pricing constants
 │   ├── connection.py                           # Database connection management
 │   ├── initialize.py                           # Database initialization
 │   ├── room_types.py                           # Room type operations
@@ -45,13 +44,11 @@ RoomInventoryService/
 ```
 
 The database module (`db/`) is organized into several Python modules for better separation of concerns:
-- `__init__.py`: Exports the public interface of the database package
-- `config.py`: Contains room prices and seasonal configurations
+- `room_pricing.py`: Contains room prices and seasonal mulitpliers
 - `connection.py`: Handles database connection management
 - `initialize.py`: Contains database initialization and setup functions
 - `room_types.py`: Handles all room type-related database operations
 - `rooms.py`: Handles all room-related database operations
-
 
 ## Prerequisites
 
