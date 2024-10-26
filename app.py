@@ -38,6 +38,11 @@ def add_room_type():
 @app.route('/api/v1/room_types/<int:id>/price', methods=['PATCH'])
 def update_room_type_price(id):
     data = request.get_json()
+
+    # Check if base_price is provided and is a valid number
+    if 'base_price' not in data or not isinstance(data['base_price'], (int, float)):
+        return jsonify({"error": "Invalid base_price or missing field"}), 400
+
     db_update_room_type_price(id, float(data['base_price']))
     return jsonify({"message": "Price updated successfully"}), 200
 
