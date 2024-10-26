@@ -5,6 +5,8 @@
 ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
+![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
+![Tableau](https://img.shields.io/badge/Tableau-E97627?style=for-the-badge&logo=tableau&logoColor=white)
 
 ## Overview
 
@@ -85,15 +87,15 @@ erDiagram
 
 ## API Documentation
 
-| Method | Endpoint                   | Description             | Request Body                          | Response (200)                                                                                   | Error Responses                      |
-|--------|-----------------------------|-------------------------|---------------------------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
-| GET    | /api/v1/room_types          | Get all room types     | N/A                                   | `[{"id": 1, "type_name": "Standard Single", "base_price": 900}]`                                 | 404: `{"error": "No room types found"}` |
-| GET    | /api/v1/room_type/<id>      | Get room type by ID    | N/A                                   | `{"id": 1, "type_name": "Standard Single", "base_price": 900}`                                   | 404: `{"error": "Room type not found"}` |
-| POST   | /api/v1/room_type           | Add new room type      | `{"type_name": "Deluxe", "base_price": 1500}` | `{"message": "Room type added successfully"}`                                                 | 400: `{"error": "Missing required fields"}` |
-| PATCH  | /api/v1/room_type/<id>/price| Update room price      | `{"base_price": 1600}`                | `{"message": "Price updated successfully"}`                                                     | 404: `{"error": "Room type not found"}` |
-| GET    | /api/v1/rooms               | Get all rooms          | N/A                                   | `[{"id": 1, "room_type_id": 1, "availability": 1, "type_name": "Standard Single", "base_price": 900}]` | 404: `{"error": "No rooms found"}`       |
-| GET    | /api/v1/room/<id>           | Get room by ID         | N/A                                   | `{"id": 1, "room_type_id": 1, "availability": 1, "type_name": "Standard Single", "base_price": 900}` | 404: `{"error": "Room not found"}`       |
-| PATCH  | /api/v1/room/<id>/availability| Update room availability| `{"availability": 0}`              | `{"message": "Room availability updated successfully"}`                                          | 404: `{"error": "Room not found"}`       |
+| Method | Endpoint                     | Description             | Request Body                          | Response (200)                                                                                   | Error Responses                      |
+|--------|-------------------------------|-------------------------|---------------------------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
+| GET    | /api/v1/room_types            | Get all room types     | N/A                                   | `[{"id": 1, "type_name": "Standard Single", "base_price": 900}]`                                 | 404: `{"error": "No room types found"}` |
+| GET    | /api/v1/room_type/{roomId}    | Get room type by ID    | N/A                                   | `{"id": 1, "type_name": "Standard Single", "base_price": 900}`                                   | 404: `{"error": "Room type not found"}` |
+| POST   | /api/v1/room_type             | Add new room type      | `{"type_name": "Deluxe", "base_price": 1500}` | `{"message": "Room type added successfully"}`                                                 | 400: `{"error": "Missing required fields"}` |
+| PATCH  | /api/v1/room_type/{roomId}/price | Update room price      | `{"base_price": 1600}`                | `{"message": "Price updated successfully"}`                                                     | 404: `{"error": "Room type not found"}` |
+| GET    | /api/v1/rooms                 | Get all rooms          | N/A                                   | `[{"id": 1, "room_type_id": 1, "availability": 1, "type_name": "Standard Single", "base_price": 900}]` | 404: `{"error": "No rooms found"}`       |
+| GET    | /api/v1/room/{roomId}         | Get room by ID         | N/A                                   | `{"id": 1, "room_type_id": 1, "availability": 1, "type_name": "Standard Single", "base_price": 900}` | 404: `{"error": "Room not found"}`       |
+| PATCH  | /api/v1/room/{roomId}/availability | Update room availability| `{"availability": 0}`              | `{"message": "Room availability updated successfully"}`                                          | 404: `{"error": "Room not found"}`       |
 
 ## Room Types and Pricing System
 
