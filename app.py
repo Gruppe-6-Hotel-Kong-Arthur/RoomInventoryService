@@ -1,7 +1,17 @@
 from flask import Flask, jsonify, request
 from db.initialize import init_db
-from db.room_type_repository import db_get_room_types, db_get_room_type, db_add_room_type, db_update_room_type_price
-from db.room_repository import db_get_rooms, db_get_room, db_update_room_availability
+from db.room_repository import (
+    db_available_room_of_type,
+    db_get_room,
+    db_get_rooms,
+    db_update_room_availability,
+)
+from db.room_type_repository import (
+    db_add_room_type,
+    db_get_room_type,
+    db_get_room_types,
+    db_update_room_type_price,
+)
 
 # Initializes Flask app
 app = Flask(__name__)
@@ -68,6 +78,23 @@ def update_room_availability(id):
     data = request.get_json()
     db_update_room_availability(id, int(data['availability']))
     return jsonify({"message": "Room availability updated successfully"}), 200
+
+# Retrieves first available room of specified type
+@app.route('/api/v1/rooms/<int:room_type_id>/available', methods=['GET'])
+def available_room_of_type(room_type_id):
+
+    # Check if room_type_id is provided and is a valid integer
+    if not room_type_id or not isinstance(room_type_id, int):
+        return jsonify({"error": "Invalid room_type_id or missing field"}), 400
+
+    room_id = db_available_room_of_type(room_type_id)
+
+    # Return room_id if available, otherwise return error
+    if room_id:
+        return jsonify({"room_id": room_id})
+    return jsonify({"error": "No available rooms found"}), 404
+
+# ------------------------------ Error Handlers & Main ------------------------------ #
 
 # Error handler for 404 Not Found
 @app.errorhandler(404)
