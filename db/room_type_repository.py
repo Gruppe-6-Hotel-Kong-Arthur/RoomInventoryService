@@ -22,7 +22,6 @@ def db_get_room_types_with_availability():
         FROM RoomTypes
         LEFT JOIN Rooms ON RoomTypes.id = Rooms.room_type_id AND Rooms.availability = 1
         GROUP BY RoomTypes.id
-        ORDER BY RoomTypes.base_price
     """)
     result = [dict(row) for row in cursor.fetchall()]
     connection.close()
