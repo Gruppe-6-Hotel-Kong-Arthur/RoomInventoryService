@@ -11,6 +11,23 @@ def db_get_room_types():
     connection.close()
     return result
 
+# Gets all room types with availability
+def db_get_room_types_with_availability():
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    # Retrieve all room types from the RoomTypes table with max_count and available_count and order them by id
+    cursor.execute("""
+        SELECT RoomTypes.id, RoomTypes.type_name, RoomTypes.base_price, COUNT(Rooms.id) as available_count, RoomTypes.max_count
+        FROM RoomTypes
+        LEFT JOIN Rooms ON RoomTypes.id = Rooms.room_type_id AND Rooms.availability = 1
+        GROUP BY RoomTypes.id
+        ORDER BY RoomTypes.base_price
+    """)
+    result = [dict(row) for row in cursor.fetchall()]
+    connection.close()
+    return result
+
 # Gets specific room type by id
 def db_get_room_type(id):
     connection = create_connection()

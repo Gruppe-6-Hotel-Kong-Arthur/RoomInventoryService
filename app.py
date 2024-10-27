@@ -10,6 +10,7 @@ from db.room_type_repository import (
     db_add_room_type,
     db_get_room_type,
     db_get_room_types,
+    db_get_room_types_with_availability,
     db_update_room_type_price,
 )
 
@@ -21,6 +22,18 @@ app = Flask(__name__)
 def get_room_types():
     try:
         room_types = db_get_room_types()
+    except Exception as e:        
+        return jsonify({"error": str(e)}), 500
+
+    if room_types:
+        return jsonify(room_types)
+    return jsonify({"error": "No room types found"}), 404
+
+# Retrieves all room types with availability
+@app.route('/api/v1/room_types/availability', methods=['GET'])
+def get_room_types_with_availability():
+    try:
+        room_types = db_get_room_types_with_availability()
     except Exception as e:        
         return jsonify({"error": str(e)}), 500
 
