@@ -1,12 +1,12 @@
 from flask import Flask, jsonify, request
-from db.initialize import init_db
-from db.room_repository import (
+from repositories.initialize import init_db
+from repositories.room_repository import (
     db_available_room_of_type,
     db_get_room,
     db_get_rooms,
     db_update_room_availability,
 )
-from db.room_type_repository import (
+from repositories.room_type_repository import (
     db_add_room_type,
     db_get_room_type,
     db_get_room_types,
