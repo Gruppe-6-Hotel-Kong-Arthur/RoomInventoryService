@@ -10,7 +10,7 @@ def init_db():
     # If data does not exist in database, insert base data and read CSV data
     if not _check_data_exists():
         _insert_season_multiplier_data()
-        _insert_base_data()
+        _insert_room_type_data()
         _read_csv_data()
         # _initialize_rooms()  # Removed since availability is now set in _read_csv_data()
 
@@ -63,7 +63,7 @@ def _check_data_exists():
     return result
 
 # Insert base room type name, price and max_count with BASE_PRICES and ROOM_COUNTS into RoomTypes table
-def _insert_base_data():
+def _insert_room_type_data():
     connection = create_connection()
     cursor = connection.cursor()
     
