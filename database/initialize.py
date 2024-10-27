@@ -1,7 +1,7 @@
 import pandas as pd
 import os
-from .connection import create_connection
-from .constants import BASE_PRICES, SEASONS, ROOM_COUNTS
+from database.connection import create_connection
+from database.constants import BASE_PRICES, SEASONS, ROOM_COUNTS
 
 # Initializes database with tables and data
 def init_db():
@@ -12,7 +12,6 @@ def init_db():
         _insert_season_multiplier_data()
         _insert_room_type_data()
         _read_csv_data()
-        # _initialize_rooms()  # Removed since availability is now set in _read_csv_data()
 
     print("Database initialized successfully.")
 

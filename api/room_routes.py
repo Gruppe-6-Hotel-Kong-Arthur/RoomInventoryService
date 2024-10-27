@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from ..repositories.room_repository import (
+from repositories.room_repository import (
     db_available_room_of_type,
     db_get_room,
     db_get_rooms,
