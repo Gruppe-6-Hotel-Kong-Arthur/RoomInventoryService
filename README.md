@@ -47,31 +47,6 @@ RoomInventoryService/
 └── README.md                                    # Project documentation
 ```
 
-
----
-
-## Prerequisites
-
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [Python 3.x](https://www.python.org/downloads/) (for local development)
-- [Postman](https://www.postman.com/downloads/) (for testing)
-
-## Installation
-
-### Docker Setup (Recommended)
-```bash
-docker build -t room-inventory-service .
-docker run -d -p 5002:5002 --name room-inventory-service room-inventory-service
-```
-
-### Local Development Setup
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python3 app.py
-```
-
 ## Database Schema
 
 ```mermaid
@@ -95,20 +70,6 @@ erDiagram
     }
 ```
 
-## API Documentation
-
-| Method | Endpoint | Description | Request Body | Response (200) | Error Responses |
-|--------|----------|-------------|--------------|----------------|-----------------|
-| GET | /api/v1/room_types | Get all room types | N/A | `[{"id": 1, "type_name": "Standard Single", "base_price": 900.0, "max_count": 50}]` | 404: `{"error": "No room types found"}` |
-| GET | /api/v1/room_types/availability | Get room types with availability | N/A | `[{"id": 1, "type_name": "Standard Single", "base_price": 900.0, "available_count": 40, "max_count": 50}]` | 404: `{"error": "No room types found"}` |
-| GET | /api/v1/room_types/{roomId} | Get room type by ID | N/A | `{"id": 1, "type_name": "Standard Single", "base_price": 900.0, "max_count": 50}` | 404: `{"error": "Room type not found"}` |
-| POST | /api/v1/room_types | Add new room type | `{"type_name": "Deluxe", "base_price": 1500.0, "max_count": 10}` | `{"message": "Room type added successfully"}` | 400: `{"error": "Missing required fields"}` |
-| PATCH | /api/v1/room_types/{roomId}/price | Update room price | `{"base_price": 1600.0}` | `{"message": "Price updated successfully"}` | 404: `{"error": "Room type not found"}` |
-| GET | /api/v1/rooms | Get all rooms | N/A | `[{"id": 1, "room_type_id": 1, "availability": 1, "type_name": "Standard Single", "base_price": 900.0}]` | 404: `{"error": "No rooms found"}` |
-| GET | /api/v1/rooms/{roomId} | Get room by ID | N/A | `{"id": 1, "room_type_id": 1, "availability": 1, "type_name": "Standard Single", "base_price": 900.0}` | 404: `{"error": "Room not found"}` |
-| PATCH | /api/v1/rooms/{roomId}/availability | Update room availability | `{"availability": 0}` | `{"message": "Room availability updated successfully"}` | 404: `{"error": "Room not found"}` |
-| GET | /api/v1/rooms/{roomTypeId}/available | Get first available room of type | N/A | `{"room_id": 42}` | 404: `{"error": "No available rooms found"}` |
-
 ## Room Types and Distribution
 
 The following table summarizes the distribution of room types based on the total bookings recorded. The hotel has a total of **214 rooms**, with varying amounts allocated to each type reflecting their luxury status and corresponding pricing.
@@ -131,7 +92,45 @@ The following table summarizes the distribution of room types based on the total
 
 ---
 
+## API Documentation
+
+| Method | Endpoint | Description | Request Body | Response (200) | Error Responses |
+|--------|----------|-------------|--------------|----------------|-----------------|
+| GET | /api/v1/room_types | Get all room types | N/A | `[{"id": 1, "type_name": "Standard Single", "base_price": 900.0, "max_count": 50}]` | 404: `{"error": "No room types found"}` |
+| GET | /api/v1/room_types/availability | Get room types with availability | N/A | `[{"id": 1, "type_name": "Standard Single", "base_price": 900.0, "available_count": 40, "max_count": 50}]` | 404: `{"error": "No room types found"}` |
+| GET | /api/v1/room_types/{roomId} | Get room type by ID | N/A | `{"id": 1, "type_name": "Standard Single", "base_price": 900.0, "max_count": 50}` | 404: `{"error": "Room type not found"}` |
+| POST | /api/v1/room_types | Add new room type | `{"type_name": "Deluxe", "base_price": 1500.0, "max_count": 10}` | `{"message": "Room type added successfully"}` | 400: `{"error": "Missing required fields"}` |
+| PATCH | /api/v1/room_types/{roomId}/price | Update room price | `{"base_price": 1600.0}` | `{"message": "Price updated successfully"}` | 404: `{"error": "Room type not found"}` |
+| GET | /api/v1/rooms | Get all rooms | N/A | `[{"id": 1, "room_type_id": 1, "availability": 1, "type_name": "Standard Single", "base_price": 900.0}]` | 404: `{"error": "No rooms found"}` |
+| GET | /api/v1/rooms/{roomId} | Get room by ID | N/A | `{"id": 1, "room_type_id": 1, "availability": 1, "type_name": "Standard Single", "base_price": 900.0}` | 404: `{"error": "Room not found"}` |
+| PATCH | /api/v1/rooms/{roomId}/availability | Update room availability | `{"availability": 0}` | `{"message": "Room availability updated successfully"}` | 404: `{"error": "Room not found"}` |
+| GET | /api/v1/rooms/{roomTypeId}/available | Get first available room of type | N/A | `{"room_id": 42}` | 404: `{"error": "No available rooms found"}` |
+
+---
+
 ## Testing
+
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Python 3.x](https://www.python.org/downloads/) (for local development)
+- [Postman](https://www.postman.com/downloads/) (for testing)
+
+### Installation
+
+#### Docker Setup (Recommended)
+```bash
+docker build -t room-inventory-service .
+docker run -d -p 5002:5002 --name room-inventory-service room-inventory-service
+```
+
+#### Local Development Setup
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python3 app.py
+```
 
 ### Postman Collection
 
