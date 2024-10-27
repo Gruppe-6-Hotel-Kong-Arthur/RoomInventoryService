@@ -8,7 +8,7 @@ from repositories.room_repository import (
 
 room_routes = Blueprint('rooms', __name__)
 
-@room_routes.route('/', methods=['GET'])
+@room_routes.route('', methods=['GET'])
 def get_rooms():
     try:
         rooms = db_get_rooms()

@@ -9,7 +9,7 @@ from repositories.room_type_repository import (
 
 room_type_routes = Blueprint('room_types', __name__)
 
-@room_type_routes.route('/', methods=['GET'])
+@room_type_routes.route('', methods=['GET'])
 def get_room_types():
     try:
         room_types = db_get_room_types()
@@ -33,7 +33,7 @@ def get_room_type(room_type_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@room_type_routes.route('/', methods=['POST'])
+@room_type_routes.route('', methods=['POST'])
 def add_room_type():
     data = request.get_json()
     required_fields = ['type_name', 'base_price', 'max_count']
