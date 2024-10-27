@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from db.initialize import init_db
-from db.room_types import db_get_room_types, db_get_room_type, db_add_room_type, db_update_room_type_price
-from db.rooms import db_get_rooms, db_get_room, db_update_room_availability
+from db.room_type_repository import db_get_room_types, db_get_room_type, db_add_room_type, db_update_room_type_price
+from db.room_repository import db_get_rooms, db_get_room, db_update_room_availability
 
 # Initializes Flask app
 app = Flask(__name__)

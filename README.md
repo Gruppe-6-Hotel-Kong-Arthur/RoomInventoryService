@@ -22,33 +22,34 @@ The Room Inventory Microservice is a vital component of the Hotel Kong Arthur ma
 ## Project Structure
 
 ```bash
-RoomInventoryService/  
-│  
-├── csv/  
-│   └── international_names_with_rooms_1000.csv  # Initial room data  
-│  
-├── db/  
-│   ├── room_pricing.py                         # Room pricing constants
-│   ├── connection.py                           # Database connection management
-│   ├── initialize.py                           # Database initialization
-│   ├── room_types.py                           # Room type operations
-│   ├── rooms.py                                # Room operations
-│   └── room_inventory.db                       # SQLite database  
-│  
-├── .dockerignore                               # Docker ignore rules  
-├── .gitignore                                  # Git ignore rules  
-├── app.py                                      # Main Flask application  
-├── Dockerfile                                  # Docker configuration  
-├── README.md                                   # Project documentation  
-└── requirements.txt                            # Python dependencies  
+RoomInventoryService/
+│
+├── csv/
+│   └── international_names_with_rooms_1000.csv  # Initial room data
+│
+├── db/
+│   ├── pricing_constants.py          # Room pricing and seasonal multipliers
+│   ├── connection.py                 # Database connection management
+│   ├── initialize.py                 # Database initialization
+│   ├── room_type_repository.py       # Room type operations
+│   ├── room_repository.py            # Room operations
+│   └── room_inventory.db            # SQLite database
+│
+├── .dockerignore                    # Docker ignore rules
+├── .gitignore                       # Git ignore rules
+├── app.py                          # Main Flask application
+├── Dockerfile                      # Docker configuration
+├── README.md                       # Project documentation
+└── requirements.txt                # Python dependencies
 ```
 
 The database module (`db/`) is organized into several Python modules for better separation of concerns:
-- `room_pricing.py`: Contains room prices and seasonal mulitpliers
+
+- `pricing_constants.py`: Contains room pricing constants and seasonal multipliers
 - `connection.py`: Handles database connection management
 - `initialize.py`: Contains database initialization and setup functions
-- `room_types.py`: Handles all room type-related database operations
-- `rooms.py`: Handles all room-related database operations
+- `room_type_repository.py`: Handles all room type-related database operations
+- `room_repository.py`: Handles all room-related database operations
 
 ## Prerequisites
 
