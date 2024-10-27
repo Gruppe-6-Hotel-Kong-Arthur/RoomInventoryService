@@ -16,3 +16,15 @@ SEASONS = {
     'MID': 1.0,   # Mid season multiplier (normal price)
     'HIGH': 1.2    # High season multiplier (20% increase)
 }
+
+# Room counts for each type (214 in total)
+ROOM_COUNTS = {
+    'Standard Single': 50,
+    'Grand Lit': 50,
+    'Standard Double': 40,
+    'Superior Double': 25,
+    'Junior Suite': 20,
+    'Spa Executive': 15,
+    'Suite': 10,
+    'LOFT Suite': 4
+}
