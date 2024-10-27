@@ -1,4 +1,4 @@
-from .connection import create_connection
+from ..database.connection import create_connection
 
 # Retrieves all rooms with type information, excluding max_count
 def db_get_rooms():

@@ -1,4 +1,4 @@
-from .connection import create_connection
+from ..database.connection import create_connection
 
 # Gets all room types 
 def db_get_room_types():
