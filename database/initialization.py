@@ -25,9 +25,14 @@ def _create_tables():
         CREATE TABLE IF NOT EXISTS RoomTypes (
             id INTEGER PRIMARY KEY,
             type_name TEXT NOT NULL UNIQUE,
-            base_price REAL NOT NULL,
+            base_price REAL NOT NULL CHECK(base_price >= 0),
             max_count INTEGER NOT NULL CHECK(max_count > 0)
         )
+    """)
+
+    # Create index on type_name for efficient lookups in RoomTypes table
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS roomtypes_idx_type_name ON RoomTypes(type_name)
     """)
 
     # Create Rooms table
@@ -40,6 +45,16 @@ def _create_tables():
         )
     """)
 
+    # Create index on room_type_id for efficient joins in Rooms table
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS rooms_idx_room_type_id ON Rooms(room_type_id)
+    """)
+
+    # Create index on availability for efficient filtering in Rooms table
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS rooms_idx_availability ON Rooms(availability)
+    """)
+
     # Create Seasons table 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Seasons (
@@ -47,6 +62,11 @@ def _create_tables():
             season_type TEXT NOT NULL,
             multiplier REAL NOT NULL
         )
+    """)
+
+    # Create index on season_type for efficient lookups in Seasons table
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS seasons_idx_season_type ON Seasons(season_type)
     """)
 
     connection.commit()
