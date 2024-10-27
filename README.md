@@ -32,15 +32,15 @@ RoomInventoryService/
 │   └── international_names_with_rooms_1000.csv  # Initial room data
 ├── app.py                                       # Main application entry point
 ├── api/                                         # API routes for the application
-│   ├── room_routes.py                           # Routes related to room operations
-│   ├── room_type_routes.py                      # Routes related to room type operations
-├── repositories/                                # Data access layer
-│   ├── room_repository.py                       # Database operations for rooms
-│   ├── room_type_repository.py                  # Database operations for room types
+│   ├── room_routes.py                           
+│   ├── room_type_routes.py                      
+├── repositories/                                # Data access layer with database operations
+│   ├── room_repository.py                       
+│   ├── room_type_repository.py                  
 ├── database/                                    # Database connection and initialization
-│   ├── connection.py                            # Database connection setup
-│   ├── initialize.py                            # Database initialization script
-│   ├── constants.py                             # Room type and price, multiplier, room type count
+│   ├── connection.py                            
+│   ├── initialization.py                            
+│   ├── constants.py                             
 │   ├── room_inventory.db                        # SQLite database
 ├── Dockerfile                                   # Docker configuration file
 ├── requirements.txt                             # Python dependencies
