@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from database.initialize import init_db
+from database.initialization import init_db
 from api.room_routes import room_routes
 from api.room_type_routes import room_type_routes
 
