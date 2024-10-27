@@ -57,32 +57,32 @@ def get_room_type(room_type_id):
 @app.route('/api/v1/room_types', methods=['POST'])
 def add_room_type():
     data = request.get_json()
-    required_fields = ['type_name', 'base_price']
+    required_fields = ['type_name', 'base_price', 'max_count']
     
     # Check if required fields are provided and are valid
     if not all(field in data for field in required_fields) or not isinstance(data['base_price'], (int, float)):
-        return jsonify({"error": "Missing required fields or invalid data"}), 400
+        return jsonify({"error": "Invalid or missing field"}), 400
 
     # Add room type and return success message
     try:
-        db_add_room_type(data['type_name'], float(data['base_price']))
+        db_add_room_type(data['type_name'], data['base_price'], data['max_count'])
         return jsonify({"message": "Room type added successfully"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
 # Updates/Patches room type price
-@app.route('/api/v1/room_types/price', methods=['PATCH'])
-def update_room_type_price():
+@app.route('/api/v1/room_types/<int:room_type_id>/price', methods=['PATCH'])
+def update_room_type_price(room_type_id):
     data = request.get_json()
     base_price = data.get('base_price')
-
-    # Check if base_price is provided and is a valid number
-    if not base_price or not isinstance(base_price, (int, float)):
-        return jsonify({"error": "Invalid base_price or missing field"}), 400
+    
+    # Validate base_price and room_type_id
+    if base_price is None or not isinstance(base_price, (int, float)) or not isinstance(room_type_id, int):
+        return jsonify({"error": "Invalid or missing field: base_price or room_type_id"}), 400
 
     # Update room type price and return success message or error
     try:
-        db_update_room_type_price(float(base_price))
+        db_update_room_type_price(room_type_id, float(base_price))
         return jsonify({"message": "Room type price updated successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
@@ -116,14 +116,15 @@ def get_room(room_id):
 @app.route('/api/v1/rooms/<int:room_id>/availability', methods=['PATCH'])
 def update_room_availability(room_id):
     data = request.get_json()
+    availability = data.get('availability')
 
     # Check if availability is provided and is a valid integer
-    if not data.get('availability') or not isinstance(data['availability'], int):
-        return jsonify({"error": "Invalid availability or missing field"}), 400
+    if availability is None or not isinstance(availability, int) or not isinstance(room_id, int):
+        return jsonify({"error": "Invalid or missing field: availability or room_id"}), 400
     
     # Update room availability and return success message or error
     try:
-        db_update_room_availability(room_id, data['availability'])
+        db_update_room_availability(room_id, availability)
         return jsonify({"message": "Room availability updated successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400

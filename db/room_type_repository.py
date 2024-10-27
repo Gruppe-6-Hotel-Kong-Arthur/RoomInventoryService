@@ -37,14 +37,14 @@ def db_get_room_type(id):
     connection.close()
     return dict(result) if result else None
 
-# Adds new room type
-def db_add_room_type(type_name, base_price):
+# Add new room type
+def db_add_room_type(type_name, base_price, max_count):
     connection = create_connection()
     cursor = connection.cursor()
     cursor.execute("""
-        INSERT INTO RoomTypes (type_name, base_price) 
-        VALUES (?, ?)
-    """, (type_name, base_price))
+        INSERT INTO RoomTypes (type_name, base_price, max_count)
+        VALUES (?, ?, ?)
+    """, (type_name, base_price, max_count))
     connection.commit()
     connection.close()
     return True
@@ -53,7 +53,7 @@ def db_add_room_type(type_name, base_price):
 def db_update_room_type_price(id, base_price):
     connection = create_connection()
     cursor = connection.cursor()
-    cursor.execute("""UPDATE RoomTypes SET base_price = ? WHERE id = ?""", (base_price, id))
+    cursor.execute('UPDATE RoomTypes SET base_price = ? WHERE id = ?', (base_price, id))
     connection.commit()
     connection.close()
     return True
