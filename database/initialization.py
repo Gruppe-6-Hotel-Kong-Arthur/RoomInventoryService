@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 from database.connection import create_connection
-from database.constants import BASE_PRICES, SEASONS, ROOM_COUNTS
+from database.constants import BASE_PRICES, SEASONS, SEASON_DATES, ROOM_COUNTS
 
 # Initializes database with tables and data
 def init_db():
@@ -11,6 +11,7 @@ def init_db():
     if not _check_data_exists():
         _insert_season_multiplier_data()
         _insert_room_type_data()
+        _insert_season_dates()
         _read_csv_data()
 
     print("Database initialized successfully.")
@@ -59,14 +60,36 @@ def _create_tables():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Seasons (
             id INTEGER PRIMARY KEY,
-            season_type TEXT NOT NULL,
-            multiplier REAL NOT NULL
+            season_type TEXT NOT NULL UNIQUE,
+            multiplier REAL NOT NULL CHECK(multiplier >= 0)
         )
     """)
 
     # Create index on season_type for efficient lookups in Seasons table
     cursor.execute("""
         CREATE INDEX IF NOT EXISTS seasons_idx_season_type ON Seasons(season_type)
+    """)
+
+    # Create index on multiplier for efficient filtering in Seasons table
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS seasons_idx_multiplier ON Seasons(multiplier)
+    """)
+
+    # Create SeasonDates table (Unique constraint to prevent overlapping dates)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS SeasonDates (
+            id INTEGER PRIMARY KEY,
+            season_id INTEGER NOT NULL,
+            start_date DATE NOT NULL CHECK(start_date >= DATE('now')), 
+            end_date DATE NOT NULL CHECK(end_date >= start_date),
+            FOREIGN KEY (season_id) REFERENCES Seasons(id),
+            UNIQUE (season_id, start_date, end_date)
+        )
+    ''')
+
+    # Create index on season_id for efficient joins in SeasonDates table
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS seasondates_idx_season_id ON SeasonDates(season_id)
     """)
 
     connection.commit()
@@ -108,6 +131,19 @@ def _insert_season_multiplier_data():
             VALUES (?, ?)
         """, (season_type, multiplier))
             
+    connection.commit()
+    connection.close()
+
+# Insert season dates into SeasonDates table
+def _insert_season_dates():
+    connection = create_connection()
+    cursor = connection.cursor()
+    
+    # Insert season dates using the SEASON_DATES constant
+    cursor.executemany("""
+        INSERT INTO SeasonDates (season_id, start_date, end_date) VALUES (?, ?, ?)
+    """, SEASON_DATES)
+    
     connection.commit()
     connection.close()
 

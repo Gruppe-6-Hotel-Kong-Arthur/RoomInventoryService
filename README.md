@@ -90,6 +90,10 @@ The following table summarizes the distribution of room types based on the total
 - **Superior Double** and **Junior Suite** have a moderate number of rooms.
 - **Spa Executive**, **Suite**, and **LOFT Suite** are the least available due to their higher luxury status.
 
+## Seasons (LOW, MID, HIGH)
+
+![Seasons gantt chart]() #TODO: insert on github
+
 ---
 
 ## API Documentation

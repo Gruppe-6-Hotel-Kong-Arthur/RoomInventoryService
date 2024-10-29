@@ -36,6 +36,15 @@ def db_get_room_type(id):
     connection.close()
     return dict(result) if result else None
 
+# Gets room type base price
+def db_get_room_base_price(id):
+    connection = create_connection()
+    cursor = connection.cursor()
+    cursor.execute('SELECT base_price FROM RoomTypes WHERE id = ?', (id,))
+    result = cursor.fetchone()
+    connection.close()
+    return result['base_price'] if result else None
+
 # Add new room type
 def db_add_room_type(type_name, base_price, max_count):
     connection = create_connection()
