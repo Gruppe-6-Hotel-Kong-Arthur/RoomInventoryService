@@ -1,5 +1,5 @@
 from database.connection import create_connection
-from datetime import timedelta
+from datetime import timedelta, datetime
 from repositories.room_type_repository import db_get_room_base_price
 
 # Fetch season multiplier based on dates (a date can belong to multiple seasons)
@@ -36,26 +36,58 @@ def db_calculate_total_price(room_type_id, start_date, end_date):
     
     return total_price if total_price > 0 else None
 
-# Get season name based on date
-def db_get_season_name(date):
+# Get season by date
+def db_get_season_by_date(date):
     connection = create_connection()
     cursor = connection.cursor()
 
     try:
-        # Format date properly for SQLite comparison
-        formatted_date = date.strftime('%Y-%m-%d')
-
+        # Convert input date to string in YYYY-MM-DD format (SQLite supports text comparisons)
+        date_str = date if isinstance(date, str) else date.strftime("%Y-%m-%d")
+        
         cursor.execute('''
-            SELECT season_type FROM Seasons
+            SELECT Seasons.id, Seasons.season_type, SeasonDates.start_date, SeasonDates.end_date
+            FROM Seasons
             INNER JOIN SeasonDates ON Seasons.id = SeasonDates.season_id
             WHERE start_date <= ? AND end_date >= ?
-        ''', (formatted_date, formatted_date))
+        ''', (date_str, date_str))
+
+        result = cursor.fetchone()
+        
+        # Close the connection
+        connection.close()
+
+        if not result:
+            return None
+
+        # Return result as a dictionary with clear keys
+        return {
+            "id": result["id"],
+            "season_type": result["season_type"],
+            "start_date": result["start_date"],
+            "end_date": result["end_date"]
+        }
+
+    except Exception as e:
+        print(e)
+        return {"error": str(e)}
+
+
+# Get season type by id
+def db_get_season_by_id(id):
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute('''
+            SELECT * FROM Seasons
+            WHERE id = ?
+        ''', (id,))
 
         result = cursor.fetchone()
         connection.close()
 
-        print(result['season_type'])
     except Exception as e:
         print(e)
     
-    return result['season_type'] if result else None
+    return dict(result) if result else None
