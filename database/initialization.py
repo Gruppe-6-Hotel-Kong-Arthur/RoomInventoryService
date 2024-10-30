@@ -82,10 +82,9 @@ def _create_tables():
             CREATE TABLE IF NOT EXISTS SeasonDates (
                 id INTEGER PRIMARY KEY,
                 season_id INTEGER NOT NULL,
-                start_date DATE NOT NULL CHECK(start_date >= DATE('now')), 
+                start_date DATE NOT NULL CHECK(start_date <= end_date), 
                 end_date DATE NOT NULL CHECK(end_date >= start_date),
-                FOREIGN KEY (season_id) REFERENCES Seasons(id),
-                UNIQUE (season_id, start_date, end_date)
+                FOREIGN KEY (season_id) REFERENCES Seasons(id)
             )
         ''')
 
@@ -142,11 +141,14 @@ def _insert_season_multiplier_data():
 def _insert_season_dates():
     connection = create_connection()
     cursor = connection.cursor()
-    
-    # Insert season dates using the SEASON_DATES constant
-    cursor.executemany("""
-        INSERT INTO SeasonDates (season_id, start_date, end_date) VALUES (?, ?, ?)
-    """, SEASON_DATES)
+
+    for season_id, start_date, end_date in SEASON_DATES:
+        cursor.execute("""SELECT id FROM Seasons WHERE id = ?""", (season_id,))
+                       
+        cursor.execute("""
+            INSERT INTO SeasonDates (season_id, start_date, end_date) 
+            VALUES (?, ?, ?)
+        """, (season_id, start_date, end_date,))
     
     connection.commit()
     connection.close()
