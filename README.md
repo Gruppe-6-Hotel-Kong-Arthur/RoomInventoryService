@@ -74,13 +74,34 @@ RoomInventoryService/
 
 ### Seasonal Pricing (LOW, MID, HIGH)
 
+<!-- COMMENTED OUT
 | Season | Date Range                          |
 |--------|-------------------------------------|
 | LOW    | January 6 - March 31, November 1 - November 30 |
 | MID    | April 1 - June 14, September 1 - October 31, December 1 - December 14 |
 | HIGH   | June 15 - August 31, December 15 - January 5 |
 
-<img src="https://github.com/user-attachments/assets/0283ef1d-61e4-4a20-ab1a-2a4de9fd53f0" width="600" alt="Seasons Gantt Chart">
+<img src="https://github.com/user-attachments/assets/0283ef1d-61e4-4a20-ab1a-2a4de9fd53f0" width="600" alt="Seasons Gantt Chart"
+-->
+
+```mermaid
+gantt
+    title Danish Hotel Seasons Calendar 2024
+    dateFormat YYYY-MM-DD
+
+    section 🔴 HIGH
+    Jun 15, 2024  : a6, 2024-06-15, 77d
+    Dec 15, 2024  : a7, 2024-12-15, 21d
+
+    section 🟡 MID
+    Apr 1, 2024  : a3, 2024-04-01, 75d
+    Sep 1, 2024   : a4, 2024-09-01, 61d
+    Dec 1, 2024   : a5, 2024-12-01, 14d
+    
+    section 🟢 LOW
+    Jan 6, 2024  : a1, 2024-01-06, 85d
+    Nov 1, 2024   : a2, 2024-11-01, 30d
+```
 
 #### Season Rate Adjustment Description
 - **LOW**: 20% discount - Lower rates during quieter months
