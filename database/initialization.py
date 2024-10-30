@@ -18,80 +18,84 @@ def init_db():
 
 # Creates initial database tables
 def _create_tables():
-    connection = create_connection()
-    cursor = connection.cursor()
+    try:
 
-    # Create RoomTypes table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS RoomTypes (
-            id INTEGER PRIMARY KEY,
-            type_name TEXT NOT NULL UNIQUE,
-            base_price REAL NOT NULL CHECK(base_price >= 0),
-            max_count INTEGER NOT NULL CHECK(max_count > 0)
-        )
-    """)
+        connection = create_connection()
+        cursor = connection.cursor()
 
-    # Create index on type_name for efficient lookups in RoomTypes table
-    cursor.execute("""
-        CREATE INDEX IF NOT EXISTS roomtypes_idx_type_name ON RoomTypes(type_name)
-    """)
+        # Create RoomTypes table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS RoomTypes (
+                id INTEGER PRIMARY KEY,
+                type_name TEXT NOT NULL UNIQUE,
+                base_price REAL NOT NULL CHECK(base_price >= 0),
+                max_count INTEGER NOT NULL CHECK(max_count > 0)
+            )
+        """)
 
-    # Create Rooms table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Rooms (
-            id INTEGER PRIMARY KEY,
-            room_type_id INTEGER NOT NULL,
-            availability INTEGER NOT NULL DEFAULT 1,
-            FOREIGN KEY (room_type_id) REFERENCES RoomTypes(id)
-        )
-    """)
+        # Create index on type_name for efficient lookups in RoomTypes table
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS roomtypes_idx_type_name ON RoomTypes(type_name)
+        """)
 
-    # Create index on room_type_id for efficient joins in Rooms table
-    cursor.execute("""
-        CREATE INDEX IF NOT EXISTS rooms_idx_room_type_id ON Rooms(room_type_id)
-    """)
+        # Create Rooms table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS Rooms (
+                id INTEGER PRIMARY KEY,
+                room_type_id INTEGER NOT NULL,
+                availability INTEGER NOT NULL DEFAULT 1,
+                FOREIGN KEY (room_type_id) REFERENCES RoomTypes(id)
+            )
+        """)
 
-    # Create index on availability for efficient filtering in Rooms table
-    cursor.execute("""
-        CREATE INDEX IF NOT EXISTS rooms_idx_availability ON Rooms(availability)
-    """)
+        # Create index on room_type_id for efficient joins in Rooms table
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS rooms_idx_room_type_id ON Rooms(room_type_id)
+        """)
 
-    # Create Seasons table 
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Seasons (
-            id INTEGER PRIMARY KEY,
-            season_type TEXT NOT NULL UNIQUE,
-            multiplier REAL NOT NULL CHECK(multiplier >= 0)
-        )
-    """)
+        # Create index on availability for efficient filtering in Rooms table
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS rooms_idx_availability ON Rooms(availability)
+        """)
 
-    # Create index on season_type for efficient lookups in Seasons table
-    cursor.execute("""
-        CREATE INDEX IF NOT EXISTS seasons_idx_season_type ON Seasons(season_type)
-    """)
+        # Create Seasons table 
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS Seasons (
+                id INTEGER PRIMARY KEY,
+                season_type TEXT NOT NULL UNIQUE,
+                multiplier REAL NOT NULL CHECK(multiplier >= 0)
+            )
+        """)
 
-    # Create index on multiplier for efficient filtering in Seasons table
-    cursor.execute("""
-        CREATE INDEX IF NOT EXISTS seasons_idx_multiplier ON Seasons(multiplier)
-    """)
+        # Create index on season_type for efficient lookups in Seasons table
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS seasons_idx_season_type ON Seasons(season_type)
+        """)
 
-    # Create SeasonDates table (Unique constraint to prevent overlapping dates)
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS SeasonDates (
-            id INTEGER PRIMARY KEY,
-            season_id INTEGER NOT NULL,
-            start_date DATE NOT NULL CHECK(start_date >= DATE('now')), 
-            end_date DATE NOT NULL CHECK(end_date >= start_date),
-            FOREIGN KEY (season_id) REFERENCES Seasons(id),
-            UNIQUE (season_id, start_date, end_date)
-        )
-    ''')
+        # Create index on multiplier for efficient filtering in Seasons table
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS seasons_idx_multiplier ON Seasons(multiplier)
+        """)
 
-    # Create index on season_id for efficient joins in SeasonDates table
-    cursor.execute("""
-        CREATE INDEX IF NOT EXISTS seasondates_idx_season_id ON SeasonDates(season_id)
-    """)
+        # Create SeasonDates table (Unique constraint to prevent overlapping dates)
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS SeasonDates (
+                id INTEGER PRIMARY KEY,
+                season_id INTEGER NOT NULL,
+                start_date DATE NOT NULL CHECK(start_date >= DATE('now')), 
+                end_date DATE NOT NULL CHECK(end_date >= start_date),
+                FOREIGN KEY (season_id) REFERENCES Seasons(id),
+                UNIQUE (season_id, start_date, end_date)
+            )
+        ''')
 
+        # Create index on season_id for efficient joins in SeasonDates table
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS seasondates_idx_season_id ON SeasonDates(season_id)
+        """)
+    except Exception as e:
+        print(f"Error creating tables: {e}")
+        
     connection.commit()
     connection.close()
 
