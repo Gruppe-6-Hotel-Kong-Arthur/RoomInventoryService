@@ -7,16 +7,19 @@ def _db_get_season_multiplier(date):
     connection = create_connection()
     cursor = connection.cursor()
 
+    # Format date properly for SQLite comparison
+    formatted_date = date.strftime('%Y-%m-%d')
+
     cursor.execute('''
         SELECT multiplier FROM Seasons
         INNER JOIN SeasonDates ON Seasons.id = SeasonDates.season_id
         WHERE start_date <= ? AND end_date >= ?
-    ''', (date, date))
+    ''', (formatted_date, formatted_date))
 
     result = cursor.fetchone()
     connection.close()
     
-    return result['multiplier'] if result else 1 # Default multiplier is 1 
+    return result['multiplier'] if result else 1.0 # Default multiplier is 1 
 
 # Calculate total price for stay duration (a stay can span multiple seasons)
 def db_calculate_total_price(room_type_id, start_date, end_date):
@@ -27,7 +30,8 @@ def db_calculate_total_price(room_type_id, start_date, end_date):
     iterate_date = start_date
     while iterate_date <= end_date:
         multiplier = _db_get_season_multiplier(iterate_date)
-        total_price += base_price * multiplier
+        daily_price = base_price * multiplier
+        total_price += daily_price
         iterate_date += timedelta(days=1)
     
-    return total_price if total_price else None
+    return total_price if total_price > 0 else None
