@@ -25,7 +25,7 @@ def db_calculate_total_price(room_type_id, start_date, end_date):
     
     # Iterate over each date from start_date to end_date and calculate price per day and add to total_price 
     iterate_date = start_date
-    while iterate_date < end_date:
+    while iterate_date <= end_date:
         multiplier = _db_get_season_multiplier(iterate_date)
         total_price += base_price * multiplier
         iterate_date += timedelta(days=1)
