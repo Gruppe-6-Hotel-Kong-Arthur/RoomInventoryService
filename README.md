@@ -86,21 +86,21 @@ RoomInventoryService/
 
 ```mermaid
 gantt
-    title Danish Hotel Seasons Calendar 2024
-    dateFormat YYYY-MM-DD
+    title Season Calender Overview
+    dateFormat DD-MM
 
     section 🔴 HIGH
-    Jun 15, 2024  : a6, 2024-06-15, 77d
-    Dec 15, 2024  : a7, 2024-12-15, 21d
+    15-Jun  : a6, 15-06, 77d
+    15-Dec  : a7, 15-12, 21d
 
     section 🟡 MID
-    Apr 1, 2024  : a3, 2024-04-01, 75d
-    Sep 1, 2024   : a4, 2024-09-01, 61d
-    Dec 1, 2024   : a5, 2024-12-01, 14d
+    01-Apr  : a3, 01-04, 75d
+    01-Sep  : a4, 01-09, 61d
+    01-Dec  : a5, 01-12, 14d
     
     section 🟢 LOW
-    Jan 6, 2024  : a1, 2024-01-06, 85d
-    Nov 1, 2024   : a2, 2024-11-01, 30d
+    06-Jan  : a1, 06-01, 85d
+    01-Nov  : a2, 01-11, 30d
 ```
 
 #### Season Rate Adjustment Description
