@@ -151,8 +151,8 @@ The chart below shows rate adjustments aligned with hotel demand patterns in Cop
 
 #### Docker Setup (Recommended)
 ```bash
-docker build -t room-inventory-service .
-docker run -d -p 5002:5002 --name room-inventory-service room-inventory-service
+docker build -t room_inventory_service . && docker image prune -f
+docker rm -f room_inventory_service && docker run -d -p 5002:5002 --name room_inventory_service --network microservice-network room_inventory_service
 ```
 
 #### Local Development Setup

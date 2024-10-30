@@ -35,3 +35,27 @@ def db_calculate_total_price(room_type_id, start_date, end_date):
         iterate_date += timedelta(days=1)
     
     return total_price if total_price > 0 else None
+
+# Get season name based on date
+def db_get_season_name(date):
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Format date properly for SQLite comparison
+        formatted_date = date.strftime('%Y-%m-%d')
+
+        cursor.execute('''
+            SELECT season_type FROM Seasons
+            INNER JOIN SeasonDates ON Seasons.id = SeasonDates.season_id
+            WHERE start_date <= ? AND end_date >= ?
+        ''', (formatted_date, formatted_date))
+
+        result = cursor.fetchone()
+        connection.close()
+
+        print(result['season_type'])
+    except Exception as e:
+        print(e)
+    
+    return result['season_type'] if result else None

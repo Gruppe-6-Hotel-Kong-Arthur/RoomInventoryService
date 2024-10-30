@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 from database.initialization import init_db
 from api.room_routes import room_routes
 from api.room_type_routes import room_type_routes
-from api.calculate_price_routes import calculate_price_routes
+from api.calculate_price_routes import calculate_price_routes, db_get_season_name
 
 app = Flask(__name__)
 
@@ -24,4 +24,6 @@ def internal_error(error):
 # Initializes database and runs Flask app on port 5002
 if __name__ == '__main__':
     init_db()
+    date = '2024-11-01'
+    db_get_season_name(date)
     app.run(host='0.0.0.0', port=5010)

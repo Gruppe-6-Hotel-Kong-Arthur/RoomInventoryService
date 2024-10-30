@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from repositories.calculate_price_repository import db_calculate_total_price
+from repositories.calculate_price_repository import db_calculate_total_price, db_get_season_name
 from repositories.room_type_repository import db_get_room_type
 from datetime import datetime
 
@@ -27,7 +27,14 @@ def get_total_price(room_type_id):
         return jsonify({"error": "Invalid date format. Use YYYY-MM-DD"}), 400
     
     try:
+        season = db_get_season_name(start_date)
         total_price = db_calculate_total_price(room_type_id, start_date, end_date)
-        return jsonify({"total_price": total_price}), 200 if total_price else 404
+
+        response = {
+            "price": total_price,
+            "season": season
+        }
+        
+        return jsonify(response), 200 if response else 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
