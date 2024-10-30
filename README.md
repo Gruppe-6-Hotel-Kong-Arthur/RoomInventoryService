@@ -13,15 +13,17 @@
 The **Room Inventory Microservice** is a vital component of the **Hotel Kong Arthur** management system, designed to efficiently handle all room-related operations. Built using **Flask** and **SQLite**, it provides comprehensive APIs for room management, including room type definitions, real-time availability tracking, and room allocation. The service implements a modular architecture with separate layers for API routes, data repositories, and database operations.
 
 ### Key Features
-- Room type management with customizable maximum room counts
-- Real-time room availability tracking
-- Seasonal pricing system for different room categories
-- Room allocation and reservation management
-- RESTful API endpoints with comprehensive error handling
-- SQLite database with initialization scripts
-- Docker containerization
-- Modular Blueprint architecture
-- Database connection pooling
+
+- **Room Type Management**: Customizable maximum room counts for different room types.
+- **Real-time Availability Tracking**: Monitor room availability dynamically.
+- **Seasonal Pricing System**: Different pricing for various room categories based on seasons.
+- **Room Allocation and Reservation Management**: Efficient handling of room bookings.
+- **RESTful API Endpoints**: Comprehensive error handling and clear API structure.
+- **SQLite Database**: Initialization scripts for database setup.
+- **Docker Containerization**: Easy deployment and management of the microservice.
+- **Modular Blueprint Architecture**: Enhanced maintainability and scalability.
+- **Database Connection Pooling**: Improved database performance and resource management.
+
 
 ---
 
