@@ -90,9 +90,36 @@ The following table summarizes the distribution of room types based on the total
 - **Superior Double** and **Junior Suite** have a moderate number of rooms.
 - **Spa Executive**, **Suite**, and **LOFT Suite** are the least available due to their higher luxury status.
 
-## Seasons (LOW, MID, HIGH)
+## Seasonal Pricing (LOW, MID, HIGH)
 
-![Seasons gantt chart]() #TODO: insert on github
+<img src="https://github.com/user-attachments/assets/0283ef1d-61e4-4a20-ab1a-2a4de9fd53f0" width="600" alt="Seasons Gantt Chart">
+
+---
+
+## Seasonal Pricing Overview
+
+The chart below shows rate adjustments aligned with hotel demand patterns in Copenhagen, Denmark. These seasonal rates help optimize pricing across low, mid, and high-demand periods.
+
+| **Season**    | **Rate Adjustment**    | **Description**                        |
+|---------------|------------------------|----------------------------------------|
+| **LOW**       | 20% discount           | Lower rates during quieter months      |
+| **MID**       | Standard rate          | Steady demand periods                  |
+| **HIGH**      | 20% increase           | Peak travel periods                    |
+
+---
+
+### Season Date Ranges
+
+| **Season**    | **Date Range**                  |
+|---------------|---------------------------------|
+| **LOW**       | January 6 - March 31            |
+|               | November 1 - November 30        |
+| **MID**       | April 1 - June 14               |
+|               | September 1 - October 31        |
+|               | December 1 - December 14        |
+| **HIGH**      | June 15 - August 31             |
+|               | December 15 - January 5         |
+
 
 ---
 
