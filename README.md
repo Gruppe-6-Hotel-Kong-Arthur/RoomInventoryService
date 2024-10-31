@@ -56,17 +56,17 @@ RoomInventoryService/
 
 ## Room Types and Distribution
 
-| Room Type          | Number of Rooms | Number of Bookings | Base Price (DKK) |
-|--------------------|-----------------|---------------------|-------------------|
-| Standard Single     | 50              | 1179                | 900               |
-| Grand Lit           | 50              | 1181                | 1100              |
-| Standard Double     | 40              | 1171                | 1200              |
-| Superior Double     | 25              | 134                 | 1400              |
-| Junior Suite        | 20              | 136                 | 1800              |
-| Spa Executive       | 15              | 138                 | 2000              |
-| Suite               | 10              | 137                 | 2500              |
-| LOFT Suite          | 4               | 33                  | 3000              |
-| **Total**           | **214**         | **1000**            |                   |
+| Room Type          | Number of Rooms | Base Price (DKK) |
+|--------------------|-----------------|-------------------|
+| Standard Single     | 50              | 900               |
+| Grand Lit           | 50              | 1100              |
+| Standard Double     | 40              | 1200              |
+| Superior Double     | 25              | 1400              |
+| Junior Suite        | 20              | 1800              |
+| Spa Executive       | 15              | 2000              |
+| Suite               | 10              | 2500              |
+| LOFT Suite          | 4               | 3000              |
+| **Total**           | **214**         |                   |
 
 - **Standard Single**, **Grand Lit**, and **Standard Double** are the most numerous, representing accessible luxury options.
 - **Superior Double** and **Junior Suite** have a moderate number of rooms.
